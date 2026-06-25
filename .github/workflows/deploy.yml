@@ -32,10 +32,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_AZURE_CLIENT_ID: ${{ secrets.VITE_AZURE_CLIENT_ID }}
-          VITE_AZURE_TENANT_ID: ${{ secrets.VITE_AZURE_TENANT_ID }}
-          VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
-          VITE_WORKSHEET_NAME: ${{ secrets.VITE_WORKSHEET_NAME }}
+          VITE_BASE: /sap-onepager-app/
         run: npm run build
 
       - name: Upload artifact
