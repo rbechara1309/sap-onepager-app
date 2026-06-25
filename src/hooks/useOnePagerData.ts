@@ -5,11 +5,8 @@ import { loadOnePagerData, applyFilters } from '../services/dataService'
 const INITIAL_FILTERS: FilterState = {
   search: '',
   country: '',
-  solution: '',
-  language: '',
-  industry: '',
-  partnerType: '',
-  status: '',
+  sap_region: '',
+  relationship2: '',
 }
 
 export function useOnePagerData() {
@@ -41,11 +38,8 @@ export function useOnePagerData() {
 
   const options = {
     countries: [...new Set(allRecords.map((r) => r.country).filter(Boolean))].sort() as string[],
-    solutions: [...new Set(allRecords.map((r) => r.solution).filter(Boolean))].sort() as string[],
-    languages: [...new Set(allRecords.map((r) => r.language).filter(Boolean))].sort() as string[],
-    industries: [...new Set(allRecords.map((r) => r.industry).filter(Boolean))].sort() as string[],
-    partnerTypes: [...new Set(allRecords.map((r) => r.partnerType).filter(Boolean))].sort() as string[],
-    statuses: [...new Set(allRecords.map((r) => r.status).filter(Boolean))].sort() as string[],
+    sap_regions: [...new Set(allRecords.map((r) => r.sap_region).filter(Boolean))].sort() as string[],
+    relationships: [...new Set(allRecords.map((r) => r.relationship2).filter(Boolean))].sort() as string[],
   }
 
   return {
