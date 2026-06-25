@@ -64,27 +64,35 @@ async function convert(excelPath, filesJsonPath) {
     const filesRaw = await readFile(absFiles, 'utf-8')
     const files = JSON.parse(filesRaw)
 
-    // Índice por PRM ID
-    const byPrmId = {}
+    // Índice por ID (aceita PRM ID e CRM ID)
+    const byId = {}
     for (const f of files) {
-      const prmId = extractPrmId(f.name)
-      if (prmId) {
-        if (!byPrmId[prmId]) byPrmId[prmId] = []
-        byPrmId[prmId].push(f)
+      const id = extractPrmId(f.name)
+      if (id) {
+        if (!byId[id]) byId[id] = []
+        byId[id].push(f)
       }
     }
 
-    let matched = 0
+    let matchedPrm = 0, matchedCrm = 0
     for (const rec of records) {
       const prmId = rec.prm_id || rec.prmid || rec.prm
-      if (prmId && byPrmId[prmId]) {
-        rec.onePagerUrl = byPrmId[prmId][0].url
-        rec.onePagerName = byPrmId[prmId][0].name
-        rec.onePagerCount = String(byPrmId[prmId].length)
-        matched++
+      const crmId = rec.crm_id || rec.crmid || rec.crm
+
+      // Prioridade: PRM ID, depois CRM ID
+      const match = (prmId && byId[prmId]) ? { files: byId[prmId], via: 'prm' }
+                  : (crmId && byId[crmId]) ? { files: byId[crmId], via: 'crm' }
+                  : null
+
+      if (match) {
+        rec.onePagerUrl = match.files[0].url
+        rec.onePagerName = match.files[0].name
+        rec.onePagerCount = String(match.files.length)
+        if (match.via === 'prm') matchedPrm++; else matchedCrm++
       }
     }
-    console.log(`✓ ${matched} de ${records.length} registros com One Pager vinculado`)
+    console.log(`✓ ${matchedPrm + matchedCrm} de ${records.length} registros com One Pager vinculado`)
+    console.log(`  → ${matchedPrm} via PRM ID, ${matchedCrm} via CRM ID`)
   }
 
   const manifest = {
