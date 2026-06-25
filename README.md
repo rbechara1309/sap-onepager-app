@@ -50,11 +50,11 @@ git init
 git add .
 git commit -m "feat: SAP One Pager Hub"
 git branch -M main
-git remote add origin https://github.com/SEU_ORG/sap-onepager-app.git
+git remote add origin https://github.com/rbechara1309/sap-onepager-app.git
 git push -u origin main
 ```
 
-O GitHub Actions fará o build e publicará em `https://SEU_ORG.github.io/sap-onepager-app/`
+O GitHub Actions fará o build e publicará em `https://rbechara1309.github.io/sap-onepager-app/`
 
 ---
 
