@@ -12,6 +12,9 @@ export interface OnePagerRecord {
   relationship_with_id?: string
   relationship_with_name?: string
   relationship_with_email_id?: string
+  onePagerUrl?: string
+  onePagerName?: string
+  onePagerCount?: string
   [key: string]: string | undefined
 }
 

@@ -1,5 +1,5 @@
 import { OnePagerRecord } from '../types'
-import { Mail, Users } from 'lucide-react'
+import { Mail, Users, FileText } from 'lucide-react'
 
 interface RecordTableProps {
   records: OnePagerRecord[]
@@ -49,32 +49,46 @@ export function RecordTable({ records, loading, error }: RecordTableProps) {
             <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Tipo</th>
             <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Contato SAP</th>
             <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">E-mail</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">One Pager</th>
           </tr>
         </thead>
         <tbody>
           {records.map((r, i) => (
             <tr key={r.id} className={`border-b border-gray-50 hover:bg-sap-light/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
-              <td className="px-4 py-3 font-medium text-sap-dark max-w-[220px] truncate" title={r.partner}>
+              <td className="px-4 py-3 font-medium text-sap-dark max-w-[200px] truncate" title={r.partner}>
                 {r.partner || '—'}
               </td>
               <td className="px-4 py-3 text-gray-500 text-xs">{r.prm_id || '—'}</td>
               <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{r.country || '—'}</td>
               <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{r.sap_region || '—'}</td>
               <td className="px-4 py-3 text-gray-600 whitespace-nowrap text-xs">{r['sap_sub_region_/_market_unit'] || '—'}</td>
-              <td className="px-4 py-3 text-gray-600 text-xs max-w-[180px] truncate" title={r.relationship2}>
+              <td className="px-4 py-3 text-gray-600 text-xs max-w-[160px] truncate" title={r.relationship2}>
                 {r.relationship2 || '—'}
               </td>
               <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{r.relationship_with_name || '—'}</td>
               <td className="px-4 py-3">
                 {r.relationship_with_email_id ? (
-                  <a
-                    href={`mailto:${r.relationship_with_email_id}`}
-                    className="flex items-center gap-1.5 text-sap-blue hover:text-sap-dark transition-colors text-xs"
-                  >
+                  <a href={`mailto:${r.relationship_with_email_id}`}
+                    className="flex items-center gap-1.5 text-sap-blue hover:text-sap-dark transition-colors text-xs">
                     <Mail size={13} />
-                    <span className="truncate max-w-[180px]">{r.relationship_with_email_id}</span>
+                    <span className="truncate max-w-[160px]">{r.relationship_with_email_id}</span>
                   </a>
                 ) : '—'}
+              </td>
+              <td className="px-4 py-3">
+                {r.onePagerUrl ? (
+                  <a href={r.onePagerUrl} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 bg-sap-blue hover:bg-sap-dark text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                    title={r.onePagerName}>
+                    <FileText size={13} />
+                    Ver One Pager
+                    {r.onePagerCount && Number(r.onePagerCount) > 1 && (
+                      <span className="bg-white/20 rounded px-1">{r.onePagerCount}</span>
+                    )}
+                  </a>
+                ) : (
+                  <span className="text-gray-300 text-xs">—</span>
+                )}
               </td>
             </tr>
           ))}
