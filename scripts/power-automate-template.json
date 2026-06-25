@@ -1,0 +1,102 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "description": "SAP One Pager Hub - Sincroniza Excel do SharePoint para data.json no GitHub",
+  "triggers": {
+    "Quando_arquivo_Excel_modificado": {
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_sharepointonline",
+          "operationId": "OnFileModified",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+        },
+        "parameters": {
+          "dataset": "https://sap.sharepoint.com/teams/PartnerHubBCN",
+          "table": "Shared Documents/Region LAC Latin America and Caribbean (Pablo)/2026/One Pager",
+          "folderPath": "Shared Documents/Region LAC Latin America and Caribbean (Pablo)/2026/One Pager"
+        },
+        "retryPolicy": { "type": "exponential", "count": 3, "interval": "PT10S" }
+      },
+      "recurrence": {
+        "frequency": "Day",
+        "interval": 1
+      }
+    }
+  },
+  "actions": {
+    "1_Ler_conteudo_Excel": {
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_sharepointonline",
+          "operationId": "GetFileContent",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+        },
+        "parameters": {
+          "dataset": "https://sap.sharepoint.com/teams/PartnerHubBCN",
+          "id": "@triggerOutputs()?['body/Id']"
+        }
+      },
+      "runAfter": {}
+    },
+    "2_Buscar_linhas_da_tabela": {
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_excelonlinebusiness",
+          "operationId": "GetItems",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+        },
+        "parameters": {
+          "source": "https://sap.sharepoint.com/teams/PartnerHubBCN",
+          "drive": "b!",
+          "file": "Shared Documents/Region LAC Latin America and Caribbean (Pablo)/2026/One Pager/01. SPM & PCSM - 062026 - Global.xlsx",
+          "table": "Table1"
+        }
+      },
+      "runAfter": { "1_Ler_conteudo_Excel": ["Succeeded"] }
+    },
+    "3_Montar_JSON": {
+      "type": "Compose",
+      "inputs": {
+        "lastUpdated": "@{formatDateTime(utcNow(), 'yyyy-MM-dd')}",
+        "source": "01. SPM & PCSM - 062026 - Global.xlsx",
+        "records": "@body('2_Buscar_linhas_da_tabela')?['value']"
+      },
+      "runAfter": { "2_Buscar_linhas_da_tabela": ["Succeeded"] }
+    },
+    "4_Buscar_SHA_atual_no_GitHub": {
+      "type": "Http",
+      "inputs": {
+        "method": "GET",
+        "uri": "https://api.github.com/repos/SEU_ORG/sap-onepager-app/contents/public/data.json",
+        "headers": {
+          "Authorization": "Bearer SEU_GITHUB_TOKEN",
+          "Accept": "application/vnd.github.v3+json",
+          "User-Agent": "PowerAutomate-SAPOnePagerHub"
+        }
+      },
+      "runAfter": { "3_Montar_JSON": ["Succeeded"] }
+    },
+    "5_Publicar_data_json_no_GitHub": {
+      "type": "Http",
+      "inputs": {
+        "method": "PUT",
+        "uri": "https://api.github.com/repos/SEU_ORG/sap-onepager-app/contents/public/data.json",
+        "headers": {
+          "Authorization": "Bearer SEU_GITHUB_TOKEN",
+          "Accept": "application/vnd.github.v3+json",
+          "User-Agent": "PowerAutomate-SAPOnePagerHub",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "message": "chore: update data.json [@{formatDateTime(utcNow(), 'yyyy-MM-dd')}]",
+          "content": "@{base64(string(outputs('3_Montar_JSON')))}",
+          "sha": "@{body('4_Buscar_SHA_atual_no_GitHub')?['sha']}",
+          "branch": "main"
+        }
+      },
+      "runAfter": { "4_Buscar_SHA_atual_no_GitHub": ["Succeeded"] }
+    }
+  }
+}

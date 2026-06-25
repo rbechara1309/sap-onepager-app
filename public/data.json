@@ -1,0 +1,21 @@
+{
+  "lastUpdated": "2026-06-17",
+  "source": "SPM & PCSM - 062026 - Global.xlsx",
+  "records": [
+    {
+      "id": "1",
+      "partner": "Exemplo Partner",
+      "partnerType": "GSI",
+      "solution": "SAP S/4HANA",
+      "country": "Brazil",
+      "language": "PT",
+      "industry": "Manufacturing",
+      "topic": "Cloud ERP",
+      "fileName": "ExemploPartner_OnePager.pdf",
+      "fileUrl": "",
+      "lastUpdated": "2026-06-01",
+      "owner": "Pablo",
+      "status": "Active"
+    }
+  ]
+}
