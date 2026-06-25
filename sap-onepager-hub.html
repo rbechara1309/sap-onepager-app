@@ -222,8 +222,8 @@ async function fetchExcel() {
   const filePath = CONFIG.folderPath + '/' + CONFIG.excelFileName
   const url = `${CONFIG.siteUrl}/_api/web/GetFileByServerRelativeUrl(@p)/$value?@p='${encodeURIComponent(filePath)}'`
 
-  const res = await fetch(url, { headers: { Accept: 'application/octet-stream' } })
-  if (!res.ok) throw new Error(`Não foi possível ler o Excel (HTTP ${res.status}). Verifique se está logado no SharePoint.`)
+  const res = await fetch(url, { credentials: 'include', headers: { Accept: 'application/octet-stream' } })
+  if (!res.ok) throw new Error(`Não foi possível ler o Excel (HTTP ${res.status}). Verifique se está logado no SharePoint SAP.`)
 
   const buf = await res.arrayBuffer()
   const wb = XLSX.read(buf, { type: 'array' })
@@ -246,12 +246,13 @@ async function fetchExcel() {
 async function fetchFiles() {
   setMsg('Listando arquivos One Pager…')
   const headers = { Accept: 'application/json;odata=verbose' }
+  const fetchOpts = { credentials: 'include', headers }
   let url = `${CONFIG.siteUrl}/_api/web/GetFolderByServerRelativeUrl(@p)/Files?@p='${encodeURIComponent(CONFIG.folderPath)}'&$select=Name,ServerRelativeUrl&$top=5000`
   let all = []
   let page = 1
 
   while (url) {
-    const res = await fetch(url, { headers })
+    const res = await fetch(url, fetchOpts)
     if (!res.ok) throw new Error(`Erro ao listar arquivos (HTTP ${res.status}).`)
     const data = await res.json()
     if (!data.d?.results) break
