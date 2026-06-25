@@ -8,7 +8,9 @@
     "build": "tsc && vite build",
     "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
     "preview": "vite preview",
-    "convert": "node scripts/convert-excel.mjs"
+    "convert": "node scripts/convert-excel.mjs",
+    "convert:records": "node scripts/convert-records.mjs",
+    "convert:files": "node scripts/convert-files.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
