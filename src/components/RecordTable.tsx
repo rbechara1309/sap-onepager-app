@@ -38,52 +38,79 @@ export function RecordTable({ records, loading, error }: RecordTableProps) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="text-sm border-collapse" style={{ minWidth: '1000px', width: '100%' }}>
+        <colgroup>
+          <col style={{ width: '18%' }} />  {/* Parceiro */}
+          <col style={{ width: '7%' }} />   {/* PRM ID */}
+          <col style={{ width: '10%' }} />  {/* País */}
+          <col style={{ width: '8%' }} />   {/* Região */}
+          <col style={{ width: '9%' }} />   {/* Sub-Região */}
+          <col style={{ width: '14%' }} />  {/* Tipo */}
+          <col style={{ width: '10%' }} />  {/* Contato */}
+          <col style={{ width: '15%' }} />  {/* E-mail */}
+          <col style={{ width: '9%' }} />   {/* One Pager */}
+        </colgroup>
         <thead>
           <tr className="bg-sap-light border-b border-blue-100">
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Parceiro</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">PRM ID</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">País</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Região SAP</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Sub-Região</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Tipo</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">Contato SAP</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">E-mail</th>
-            <th className="text-left px-4 py-3 font-semibold text-sap-dark whitespace-nowrap">One Pager</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">Parceiro</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">PRM ID</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">País</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">Região SAP</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">Sub-Região</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">Tipo</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">Contato SAP</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">E-mail</th>
+            <th className="text-left px-4 py-3 font-semibold text-sap-dark">One Pager</th>
           </tr>
         </thead>
         <tbody>
           {records.map((r, i) => (
-            <tr key={r.id} className={`border-b border-gray-50 hover:bg-sap-light/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
-              <td className="px-4 py-3 font-medium text-sap-dark max-w-[200px] truncate" title={r.partner}>
-                {r.partner || '—'}
+            <tr
+              key={r.id}
+              className={`border-b border-gray-100 hover:bg-sap-light/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'}`}
+            >
+              <td className="px-4 py-3 font-medium text-sap-dark">
+                <span className="block truncate" title={r.partner}>{r.partner || '—'}</span>
               </td>
-              <td className="px-4 py-3 text-gray-500 text-xs">{r.prm_id || '—'}</td>
-              <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{r.country || '—'}</td>
-              <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{r.sap_region || '—'}</td>
-              <td className="px-4 py-3 text-gray-600 whitespace-nowrap text-xs">{r['sap_sub_region_/_market_unit'] || '—'}</td>
-              <td className="px-4 py-3 text-gray-600 text-xs max-w-[160px] truncate" title={r.relationship2}>
-                {r.relationship2 || '—'}
+              <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{r.prm_id || '—'}</td>
+              <td className="px-4 py-3 text-gray-600 text-xs">
+                <span className="block truncate" title={r.country}>{r.country || '—'}</span>
               </td>
-              <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{r.relationship_with_name || '—'}</td>
+              <td className="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">{r.sap_region || '—'}</td>
+              <td className="px-4 py-3 text-gray-600 text-xs">
+                <span className="block truncate" title={r['sap_sub_region_/_market_unit']}>{r['sap_sub_region_/_market_unit'] || '—'}</span>
+              </td>
+              <td className="px-4 py-3 text-gray-600 text-xs">
+                <span className="block truncate" title={r.relationship2}>{r.relationship2 || '—'}</span>
+              </td>
+              <td className="px-4 py-3 text-gray-600 text-xs">
+                <span className="block truncate" title={r.relationship_with_name}>{r.relationship_with_name || '—'}</span>
+              </td>
               <td className="px-4 py-3">
                 {r.relationship_with_email_id ? (
-                  <a href={`mailto:${r.relationship_with_email_id}`}
-                    className="flex items-center gap-1.5 text-sap-blue hover:text-sap-dark transition-colors text-xs">
-                    <Mail size={13} />
-                    <span className="truncate max-w-[160px]">{r.relationship_with_email_id}</span>
+                  <a
+                    href={`mailto:${r.relationship_with_email_id}`}
+                    className="flex items-center gap-1 text-sap-blue hover:text-sap-dark transition-colors text-xs"
+                    title={r.relationship_with_email_id}
+                  >
+                    <Mail size={12} className="shrink-0" />
+                    <span className="truncate">{r.relationship_with_email_id}</span>
                   </a>
-                ) : '—'}
+                ) : <span className="text-gray-300">—</span>}
               </td>
               <td className="px-4 py-3">
                 {r.onePagerUrl ? (
-                  <a href={r.onePagerUrl} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 bg-sap-blue hover:bg-sap-dark text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
-                    title={r.onePagerName}>
-                    <FileText size={13} />
-                    Ver One Pager
+                  <a
+                    href={r.onePagerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={r.onePagerName}
+                    className="inline-flex items-center gap-1.5 bg-sap-blue hover:bg-sap-dark text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap w-full justify-center"
+                  >
+                    <FileText size={13} className="shrink-0" />
+                    Ver
                     {r.onePagerCount && Number(r.onePagerCount) > 1 && (
-                      <span className="bg-white/20 rounded px-1">{r.onePagerCount}</span>
+                      <span className="bg-white/25 rounded px-1 ml-0.5">{r.onePagerCount}</span>
                     )}
                   </a>
                 ) : (
